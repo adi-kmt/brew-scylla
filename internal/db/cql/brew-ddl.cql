@@ -1,6 +1,6 @@
 -- GetUserDetailsByID table
 CREATE TABLE get_user_details_by_id (
-    username text PRIMARY KEY,
+    user_id text PRIMARY KEY,
     phone_no bigint,
     coins int,
     coupons_used set<text>
@@ -13,15 +13,15 @@ CREATE TABLE get_all_store_by_city (
     location frozen<map<text, text>>,
     closes_at timestamp,
     PRIMARY KEY ((city), store_name)
-) WITH CLUSTERING ORDER BY (store_name ASC);
+);
 
--- CuponCodeByStoreId table (with TTL)
-CREATE TABLE cupon_code_by_store_id (
+-- CuponCodeByStoreId table
+CREATE TABLE coupon_code_by_store_id (
     store_name text,
-    cupon_code text,
+    coupon_code text,
     expiry_date timestamp,
     cupon_image text,
-    PRIMARY KEY ((store_name), expiry_date, cupon_code)
+    PRIMARY KEY ((store_name), expiry_date, coupon_code)
 ) WITH CLUSTERING ORDER BY (expiry_date ASC);
 
 -- GetCollectionsByStoreId table
@@ -67,11 +67,11 @@ CREATE TABLE get_products_details_by_product_name (
     description text,
     ingredients frozen<list<text>>,
     PRIMARY KEY ((store_name), product_name)
-) WITH CLUSTERING ORDER BY (product_name ASC);
+);
 
 -- GetOrdersByUserID table
 CREATE TABLE get_orders_by_user_id (
-    username text,
+    user_id text,
     order_id text,
     order_time timestamp,
     order_status text,
@@ -80,7 +80,7 @@ CREATE TABLE get_orders_by_user_id (
 
 -- GetOrderDetailsByID table
 CREATE TABLE get_order_details_by_id (
-    username text,
+    user_id text,
     order_id text,
     product_name text,
     product_quantity int,
@@ -92,12 +92,12 @@ CREATE TABLE get_order_details_by_id (
     order_total float STATIC,
     pack_name text STATIC,
     is_pack boolean STATIC,
-    PRIMARY KEY ((username, order_id), product_name)
+    PRIMARY KEY ((user_id, order_id), product_name)
 ) WITH CLUSTERING ORDER BY (product_name ASC);
 
 -- PackRedemptionByUserid table
 CREATE TABLE pack_redemption_by_userid (
-    username text,
+    user_id text,
     store_name text,
     order_id text,
     pack_name text,
