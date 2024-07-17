@@ -4,6 +4,26 @@ import (
 	"github.com/scylladb/gocqlx/v3/table"
 )
 
+var GetUserDetailsByIDTable = table.New(GetUserDetailsByIDMetadata)
+
+var GetAllStoreByCityTable = table.New(GetAllStoreByCityMetadata)
+
+var GetCuponCodeByStoreIdTable = table.New(GetCuponCodeByStoreIdMetadata)
+
+var GetCollectionsByStoreIdTable = table.New(GetCollectionsByStoreIdMetadata)
+
+var GetProductsPacksByStoreIdTable = table.New(GetProductsPacksByStoreIdMetadata)
+
+var GetProductByStoreIDTable = table.New(GetProductsByStoreIdMetadata)
+
+var GetProductsDetailsByProductNameTable = table.New(GetProductsDetailsByProductNameMetadata)
+
+var GetOrdersByUserIDTable = table.New(GetOrdersByUserIDMetadata)
+
+var GetOrderDetailsByIDTable = table.New(GetOrderDetailsByIDMetadata)
+
+var PackRedemptionByUseridTable = table.New(PackRedemptionByUseridMetadata)
+
 // Define table metadata for GetUserDetailsByID
 var GetUserDetailsByIDMetadata = table.Metadata{
 	Name:    "get_user_details_by_id",
@@ -21,7 +41,7 @@ var GetAllStoreByCityMetadata = table.Metadata{
 }
 
 // Define table metadata for CuponCodeByStoreId
-var CuponCodeByStoreIdMetadata = table.Metadata{
+var GetCuponCodeByStoreIdMetadata = table.Metadata{
 	Name:    "cupon_code_by_store_id",
 	Columns: []string{"store_name", "cupon_code", "expiry_date", "cupon_image"},
 	PartKey: []string{"store_name"},
@@ -37,7 +57,7 @@ var GetCollectionsByStoreIdMetadata = table.Metadata{
 }
 
 // Define table metadata for ProductsPacksByStoreId
-var ProductsPacksByStoreIdMetadata = table.Metadata{
+var GetProductsPacksByStoreIdMetadata = table.Metadata{
 	Name:    "products_packs_by_store_id",
 	Columns: []string{"store_name", "pack_name", "price", "description", "product_items", "prizes_10", "prizes_5", "prizes_3"},
 	PartKey: []string{"store_name"},
@@ -45,7 +65,7 @@ var ProductsPacksByStoreIdMetadata = table.Metadata{
 }
 
 // Define table metadata for ProductByStoreID
-var ProductByStoreIDMetadata = table.Metadata{
+var GetProductsByStoreIdMetadata = table.Metadata{
 	Name:    "product_by_store_id",
 	Columns: []string{"store_name", "product_name", "product_image", "price", "category", "collection_name"},
 	PartKey: []string{"store_name"},
