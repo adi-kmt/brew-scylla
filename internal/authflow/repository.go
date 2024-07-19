@@ -1,8 +1,6 @@
 package authflow
 
 import (
-	"strconv"
-
 	"github.com/adi-kmt/brew-scylla/internal/common/messages"
 	"github.com/adi-kmt/brew-scylla/internal/db"
 	"github.com/adi-kmt/brew-scylla/internal/domain/entities"
@@ -28,11 +26,22 @@ func (repo *UserRepository) GetUserDetailsByID(userName string) (*entities.UserD
 	return &user, nil
 }
 
-func (repo *UserRepository) InsertUser(userId string, phoneNo int64) *messages.AppError {
-	//TODO wrong
-
-	if err := repo.session.Query("INSERT INTO users (user_id, phone_no) VALUES (?, ?)", []string{userId, strconv.Itoa(int(phoneNo))}).Exec(); err != nil {
-		return messages.InternalServerError("Unable to insert user")
+func (repo *UserRepository) InsertUser(userId string, phoneNo int64) (string, *messages.AppError) {
+	userData := struct {
+		UserID      string   `json:"user_id"`
+		PhoneNo     int64    `json:"phone_no"`
+		Coins       int      `json:"coins"`
+		CouponsUsed []string `json:"coupons_used"`
+	}{
+		UserID:      userId,
+		PhoneNo:     phoneNo,
+		Coins:       50,
+		CouponsUsed: []string{""},
 	}
-	return nil
+
+	err := db.GetUserDetailsByIDTable.InsertQuery(repo.session).BindStruct(userData).ExecRelease()
+	if err != nil {
+		return "", messages.InternalServerError("Unable to insert user")
+	}
+	return userId, nil
 }

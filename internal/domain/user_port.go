@@ -6,6 +6,6 @@ import (
 )
 
 type UserPort interface {
-	InsertUser(userName string, phoneNo int64) *messages.AppError
+	InsertUser(userName string, phoneNo int64) (string, *messages.AppError)
 	GetUserDetailsByID(username string) (*entities.UserDetailsEntity, *messages.AppError)
 }

@@ -13,7 +13,7 @@ type loginDto struct {
 }
 
 type registerDto struct {
-	PhoneNo int64 `json:"phoneNo"`
+	PhoneNo int64 `json:"phone_no"`
 }
 
 func AuthHandler(router fiber.Router, s *AuthService) {
@@ -34,12 +34,11 @@ func AuthHandler(router fiber.Router, s *AuthService) {
 			return c.Status(fiber.StatusBadRequest).JSON(messages.BadRequest("Invalid request body"))
 		}
 
-		err := s.Register(request.PhoneNo)
+		userId, err := s.Register(request.PhoneNo)
 		if err != nil {
 			return c.Status(err.Code).JSON(messages.InternalServerError(err.Error()))
 		}
-		//TODO return token
-		return c.Status(fiber.StatusOK).JSON(messages.SuccessResponse("Registration successful"))
+		return c.Status(fiber.StatusOK).JSON(messages.SuccessResponse("Registration successful, UserID is " + userId))
 	})
 	router.Get("/user/:userId", func(c *fiber.Ctx) error {
 		userId := c.Params("userId")

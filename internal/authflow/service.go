@@ -21,10 +21,10 @@ func (s *AuthService) Login() (string, *messages.AppError) {
 	return "", nil
 }
 
-func (s *AuthService) Register(phoneNo int64) *messages.AppError {
+func (s *AuthService) Register(phoneNo int64) (string, *messages.AppError) {
 	userId, err := uuid.NewV7()
 	if err != nil {
-		return messages.InternalServerError("Unable to generate user id")
+		return "", messages.InternalServerError("Unable to generate user id")
 	}
 	return s.userPort.InsertUser(userId.String(), phoneNo)
 }
