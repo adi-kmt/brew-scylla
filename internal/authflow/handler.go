@@ -1,6 +1,8 @@
 package authflow
 
 import (
+	"net/url"
+
 	"github.com/adi-kmt/brew-scylla/internal/common/messages"
 	"github.com/gofiber/fiber/v2"
 )
@@ -14,7 +16,7 @@ type registerDto struct {
 	PhoneNo int64 `json:"phoneNo"`
 }
 
-func AuthHandler(router fiber.Router, s *authService) {
+func AuthHandler(router fiber.Router, s *AuthService) {
 	router.Post("/login", func(c *fiber.Ctx) error {
 		request := new(loginDto)
 
@@ -41,7 +43,11 @@ func AuthHandler(router fiber.Router, s *authService) {
 	})
 	router.Get("/user/:userId", func(c *fiber.Ctx) error {
 		userId := c.Params("userId")
-		user, err := s.GetUserDetailsByID(userId)
+		userIdUnescaped, err0 := url.QueryUnescape(userId)
+		if err0 != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(messages.BadRequest(err0.Error()))
+		}
+		user, err := s.GetUserDetailsByID(userIdUnescaped)
 		if err != nil {
 			return c.Status(err.Code).JSON(messages.InternalServerError(err.Error()))
 		}
