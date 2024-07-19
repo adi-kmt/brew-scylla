@@ -26,8 +26,8 @@ var PackRedemptionByUseridTable = table.New(packRedemptionByUseridMetadata)
 
 var getUserDetailsByIDMetadata = table.Metadata{
 	Name:    "get_user_details_by_id",
-	Columns: []string{"username", "phone_no", "coins", "coupons_used"},
-	PartKey: []string{"username"},
+	Columns: []string{"user_id", "phone_no", "coins", "coupons_used"},
+	PartKey: []string{"user_id"},
 	SortKey: []string{},
 }
 
@@ -75,21 +75,21 @@ var getProductsDetailsByProductNameMetadata = table.Metadata{
 
 var getOrdersByUserIDMetadata = table.Metadata{
 	Name:    "get_orders_by_user_id",
-	Columns: []string{"username", "order_id", "order_time", "order_status"},
-	PartKey: []string{"username"},
+	Columns: []string{"user_id", "order_id", "order_time", "order_status"},
+	PartKey: []string{"user_id"},
 	SortKey: []string{"order_time", "order_id"},
 }
 
 var getOrderDetailsByIDMetadata = table.Metadata{
 	Name:    "get_order_details_by_id",
-	Columns: []string{"username", "order_id", "product_name", "product_quantity", "product_price", "order_status", "order_timestamp", "order_sub_total", "discount_percentage", "order_total", "pack_name", "is_pack"},
-	PartKey: []string{"username", "order_id"},
+	Columns: []string{"user_id", "order_id", "product_name", "product_quantity", "product_price", "order_status", "order_timestamp", "order_sub_total", "discount_percentage", "order_total", "pack_name", "is_pack"},
+	PartKey: []string{"user_id", "order_id"},
 	SortKey: []string{"product_name"},
 }
 
 var packRedemptionByUseridMetadata = table.Metadata{
 	Name:    "pack_redemption_by_userid",
-	Columns: []string{"username", "store_name", "order_id", "pack_name", "order_items_remaining", "expiry_timestamp"},
-	PartKey: []string{"username"},
+	Columns: []string{"user_id", "store_name", "order_id", "pack_name", "order_items_remaining", "expiry_timestamp"},
+	PartKey: []string{"user_id"},
 	SortKey: []string{"store_name", "pack_name"},
 }

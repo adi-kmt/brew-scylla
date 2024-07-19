@@ -7,28 +7,28 @@ import (
 	"github.com/google/uuid"
 )
 
-type authService struct {
+type AuthService struct {
 	userPort domain.UserPort
 }
 
-func NewAuthService(userPort domain.UserPort) *authService {
-	return &authService{
+func NewAuthService(userPort domain.UserPort) *AuthService {
+	return &AuthService{
 		userPort: userPort,
 	}
 }
 
-func (s *authService) Login() (string, *messages.AppError) {
-	return s.userPort.Login()
+func (s *AuthService) Login() (string, *messages.AppError) {
+	return "", nil
 }
 
-func (s *authService) Register(phoneNo int64) *messages.AppError {
+func (s *AuthService) Register(phoneNo int64) *messages.AppError {
 	userId, err := uuid.NewV7()
 	if err != nil {
 		return messages.InternalServerError("Unable to generate user id")
 	}
-	return s.userPort.Register(userId.String(), phoneNo)
+	return s.userPort.InsertUser(userId.String(), phoneNo)
 }
 
-func (s *authService) GetUserDetailsByID(username string) (entities.UserDetailsEntity, *messages.AppError) {
+func (s *AuthService) GetUserDetailsByID(username string) (*entities.UserDetailsEntity, *messages.AppError) {
 	return s.userPort.GetUserDetailsByID(username)
 }

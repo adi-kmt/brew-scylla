@@ -6,7 +6,6 @@ import (
 )
 
 type UserPort interface {
-	Login() (string, *messages.AppError)
-	Register(userName string, phoneNo int64) *messages.AppError
-	GetUserDetailsByID(username string) (entities.UserDetailsEntity, *messages.AppError)
+	InsertUser(userName string, phoneNo int64) *messages.AppError
+	GetUserDetailsByID(username string) (*entities.UserDetailsEntity, *messages.AppError)
 }

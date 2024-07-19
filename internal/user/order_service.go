@@ -20,7 +20,7 @@ func (s *OrderService) GetOrders(userId string) ([]entities.OrderEntity, *messag
 	return s.orderPort.GetOrdersByUserId(userId)
 }
 
-func (s *OrderService) GetOrderDetails(userId, orderId string) (entities.OrderDetailsEntity, *messages.AppError) {
+func (s *OrderService) GetOrderDetails(userId, orderId string) (*entities.OrderDetailsEntity, *messages.AppError) {
 	return s.orderPort.GetOrderDetailsByUserAndOrderId(userId, orderId)
 }
 
