@@ -10,7 +10,7 @@ import (
 var cluster *gocql.ClusterConfig
 
 func Init() (gocqlx.Session, error) {
-	cluster = createCluster(gocql.Quorum, "brew", "127.0.0.1")
+	cluster = createCluster(gocql.LocalQuorum, "brew", "127.0.0.1")
 	return gocqlx.WrapSession(cluster.CreateSession())
 }
 
