@@ -27,6 +27,10 @@ func (s *ProductService) GetProductsByStore(storeName string) ([]domain.ProductD
 	return s.productPort.GetProductsByStore(storeName)
 }
 
+func (s *ProductService) GetProductDetailsByStore(storeName, productName string) ([]domain.ProductDetails, *messages.AppError) {
+	return s.productPort.GetProductsDetailsByStore(storeName, productName)
+}
+
 func (s *ProductService) GetProductPacks(storeName string) ([]domain.ProductPacksDTO, *messages.AppError) {
 	return s.productPort.GetProductPacksByStore(storeName)
 }

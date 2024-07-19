@@ -11,9 +11,7 @@ type loginDto struct {
 }
 
 type registerDto struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	PhoneNo  string `json:"phoneNo"`
+	PhoneNo int64 `json:"phoneNo"`
 }
 
 func AuthHandler(router fiber.Router, s *authService) {
@@ -24,10 +22,6 @@ func AuthHandler(router fiber.Router, s *authService) {
 			return c.Status(fiber.StatusBadRequest).JSON(messages.BadRequest("Invalid request body"))
 		}
 
-		err := s.Login(request.Email, request.Password)
-		if err != nil {
-			return c.Status(err.Code).JSON(messages.InternalServerError(err.Error()))
-		}
 		//TODO return token
 		return c.Status(fiber.StatusOK).JSON(messages.SuccessResponse("Login successful"))
 	})
@@ -38,7 +32,7 @@ func AuthHandler(router fiber.Router, s *authService) {
 			return c.Status(fiber.StatusBadRequest).JSON(messages.BadRequest("Invalid request body"))
 		}
 
-		err := s.Register(request.Email, request.Password, request.PhoneNo)
+		err := s.Register(request.PhoneNo)
 		if err != nil {
 			return c.Status(err.Code).JSON(messages.InternalServerError(err.Error()))
 		}

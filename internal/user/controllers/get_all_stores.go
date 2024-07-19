@@ -8,7 +8,8 @@ import (
 
 func getAllStores(s *user.ProductService) func(c *fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
-		stores, err := s.GetAllStores()
+		city := c.Query("city")
+		stores, err := s.GetAllStores(city)
 		if err != nil {
 			return c.Status(err.Code).JSON(messages.InternalServerError(err.Error()))
 		}
