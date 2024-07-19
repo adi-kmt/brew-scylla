@@ -1,17 +1,20 @@
 package domain
 
-import "github.com/adi-kmt/brew-scylla/internal/common/messages"
+import (
+	"github.com/adi-kmt/brew-scylla/internal/common/messages"
+	"github.com/adi-kmt/brew-scylla/internal/domain/entities"
+)
 
 type ProductQueryPort interface {
-	GetAllStores(city string) ([]StoreDTO, *messages.AppError)
-	GetProductCollections(storeName string, isFeatured bool) ([]ProductCollectionDTO, *messages.AppError)
-	GetProductsByStore(storeName string) ([]ProductDTO, *messages.AppError)
-	GetProductPacksByStore(storeName string) ([]ProductPacksDTO, *messages.AppError)
-	GetProductsDetailsByStore(storeName, productName string) ([]ProductDetails, *messages.AppError)
+	GetAllStores(city string) ([]entities.StoreEntity, *messages.AppError)
+	GetProductCollections(storeName string, isFeatured bool) ([]entities.ProductCollectionEntity, *messages.AppError)
+	GetProductsByStore(storeName string) ([]entities.ProductEntity, *messages.AppError)
+	GetProductPacksByStore(storeName string) ([]entities.ProductPacksEntity, *messages.AppError)
+	GetProductsDetailsByStore(storeName, productName string) ([]entities.ProductDetailsEntity, *messages.AppError)
 }
 
 type ProductSearchPort interface {
-	SearchProducts(productQuery, storeName, productCollection string) ([]ProductDTO, *messages.AppError)
+	SearchProducts(productQuery, storeName, productCollection string) ([]entities.ProductEntity, *messages.AppError)
 }
 
 type ProductPort interface {

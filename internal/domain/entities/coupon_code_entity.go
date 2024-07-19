@@ -1,8 +1,8 @@
-package domain
+package entities
 
 import "time"
 
-type CouponCodeDTO struct {
+type CouponCodeEntity struct {
 	StoreName  string    `json:"store_name"`
 	CuponCode  string    `json:"cupon_code"`
 	ExpiryDate time.Time `json:"expiry_date"`

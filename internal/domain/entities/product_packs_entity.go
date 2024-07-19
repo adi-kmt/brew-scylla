@@ -1,6 +1,6 @@
-package domain
+package entities
 
-type ProductPacksDTO struct {
+type ProductPacksEntity struct {
 	StoreName    string   `json:"store_name"`
 	PackName     string   `json:"pack_name"`
 	Price        float64  `json:"price"`

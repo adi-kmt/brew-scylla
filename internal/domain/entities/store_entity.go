@@ -1,8 +1,8 @@
-package domain
+package entities
 
 import "time"
 
-type StoreDTO struct {
+type StoreEntity struct {
 	City      string            `json:"city"`
 	StoreName string            `json:"store_name"`
 	Location  map[string]string `json:"location"`

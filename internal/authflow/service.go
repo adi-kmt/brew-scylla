@@ -3,6 +3,7 @@ package authflow
 import (
 	"github.com/adi-kmt/brew-scylla/internal/common/messages"
 	"github.com/adi-kmt/brew-scylla/internal/domain"
+	"github.com/adi-kmt/brew-scylla/internal/domain/entities"
 	"github.com/google/uuid"
 )
 
@@ -28,6 +29,6 @@ func (s *authService) Register(phoneNo int64) *messages.AppError {
 	return s.userPort.Register(userId.String(), phoneNo)
 }
 
-func (s *authService) GetUserDetailsByID(username string) (domain.UserDetailsDto, *messages.AppError) {
+func (s *authService) GetUserDetailsByID(username string) (entities.UserDetailsEntity, *messages.AppError) {
 	return s.userPort.GetUserDetailsByID(username)
 }

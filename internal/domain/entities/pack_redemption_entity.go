@@ -1,8 +1,8 @@
-package domain
+package entities
 
 import "time"
 
-type PackRedemptionDTO struct {
+type PackRedemptionEntity struct {
 	Username            string    `json:"username"`
 	StoreName           string    `json:"store_name"`
 	OrderID             string    `json:"order_id"`

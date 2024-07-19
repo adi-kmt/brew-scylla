@@ -3,6 +3,7 @@ package user
 import (
 	"github.com/adi-kmt/brew-scylla/internal/common/messages"
 	"github.com/adi-kmt/brew-scylla/internal/domain"
+	"github.com/adi-kmt/brew-scylla/internal/domain/entities"
 )
 
 type OrderService struct {
@@ -15,11 +16,11 @@ func NewOrderService(orderPort domain.OrderPort) *OrderService {
 	}
 }
 
-func (s *OrderService) GetOrders(userId string) ([]domain.OrderDTO, *messages.AppError) {
+func (s *OrderService) GetOrders(userId string) ([]entities.OrderEntity, *messages.AppError) {
 	return s.orderPort.GetOrdersByUserId(userId)
 }
 
-func (s *OrderService) GetOrderDetails(userId, orderId string) (domain.OrderDetailsDTO, *messages.AppError) {
+func (s *OrderService) GetOrderDetails(userId, orderId string) (entities.OrderDetailsEntity, *messages.AppError) {
 	return s.orderPort.GetOrderDetailsByUserAndOrderId(userId, orderId)
 }
 

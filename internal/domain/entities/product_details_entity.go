@@ -1,6 +1,6 @@
-package domain
+package entities
 
-type ProductDetails struct {
+type ProductDetailsEntity struct {
 	StoreName    string             `json:"store_name"`
 	ProductName  string             `json:"product_name"`
 	ProductImage string             `json:"product_image"`

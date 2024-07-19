@@ -1,8 +1,8 @@
-package domain
+package entities
 
 import "time"
 
-type OrderDetailsDTO struct {
+type OrderDetailsEntity struct {
 	Username           string      `json:"username"`
 	OrderID            string      `json:"order_id"`
 	ProductName        string      `json:"product_name"`

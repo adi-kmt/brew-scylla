@@ -1,10 +1,10 @@
-package domain
+package entities
 
 import "github.com/adi-kmt/brew-scylla/internal/common/messages"
 
 type Category string
 
-type ProductDTO struct {
+type ProductEntity struct {
 	StoreName      string             `json:"store_name"`
 	ProductName    string             `json:"product_name"`
 	ProductImage   string             `json:"product_image"`

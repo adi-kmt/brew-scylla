@@ -39,4 +39,12 @@ func AuthHandler(router fiber.Router, s *authService) {
 		//TODO return token
 		return c.Status(fiber.StatusOK).JSON(messages.SuccessResponse("Registration successful"))
 	})
+	router.Get("/user/:userId", func(c *fiber.Ctx) error {
+		userId := c.Params("userId")
+		user, err := s.GetUserDetailsByID(userId)
+		if err != nil {
+			return c.Status(err.Code).JSON(messages.InternalServerError(err.Error()))
+		}
+		return c.Status(fiber.StatusOK).JSON(messages.SuccessResponse(user))
+	})
 }
