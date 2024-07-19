@@ -75,7 +75,7 @@ CREATE TABLE get_orders_by_user_id (
     order_id text,
     order_time timestamp,
     order_status text,
-    PRIMARY KEY ((username), order_time, order_id)
+    PRIMARY KEY ((user_id), order_time, order_id)
 ) WITH CLUSTERING ORDER BY (order_time DESC);
 
 -- GetOrderDetailsByID table
@@ -103,5 +103,5 @@ CREATE TABLE pack_redemption_by_userid (
     pack_name text,
     order_items_remaining int,
     expiry_timestamp timestamp,
-    PRIMARY KEY ((username), store_name, pack_name)
+    PRIMARY KEY ((user_id), store_name, pack_name)
 ) WITH CLUSTERING ORDER BY (store_name ASC);

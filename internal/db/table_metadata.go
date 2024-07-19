@@ -4,100 +4,90 @@ import (
 	"github.com/scylladb/gocqlx/v3/table"
 )
 
-var GetUserDetailsByIDTable = table.New(GetUserDetailsByIDMetadata)
+var GetUserDetailsByIDTable = table.New(getUserDetailsByIDMetadata)
 
-var GetAllStoreByCityTable = table.New(GetAllStoreByCityMetadata)
+var GetAllStoreByCityTable = table.New(getAllStoreByCityMetadata)
 
-var GetCuponCodeByStoreIdTable = table.New(GetCuponCodeByStoreIdMetadata)
+var GetCuponCodeByStoreIdTable = table.New(getCuponCodeByStoreIdMetadata)
 
-var GetCollectionsByStoreIdTable = table.New(GetCollectionsByStoreIdMetadata)
+var GetCollectionsByStoreIdTable = table.New(getCollectionsByStoreIdMetadata)
 
-var GetProductsPacksByStoreIdTable = table.New(GetProductsPacksByStoreIdMetadata)
+var GetProductsPacksByStoreIdTable = table.New(getProductsPacksByStoreIdMetadata)
 
-var GetProductByStoreIDTable = table.New(GetProductsByStoreIdMetadata)
+var GetProductByStoreIDTable = table.New(getProductsByStoreIdMetadata)
 
-var GetProductsDetailsByProductNameTable = table.New(GetProductsDetailsByProductNameMetadata)
+var GetProductsDetailsByProductNameTable = table.New(getProductsDetailsByProductNameMetadata)
 
-var GetOrdersByUserIDTable = table.New(GetOrdersByUserIDMetadata)
+var GetOrdersByUserIDTable = table.New(getOrdersByUserIDMetadata)
 
-var GetOrderDetailsByIDTable = table.New(GetOrderDetailsByIDMetadata)
+var GetOrderDetailsByIDTable = table.New(getOrderDetailsByIDMetadata)
 
-var PackRedemptionByUseridTable = table.New(PackRedemptionByUseridMetadata)
+var PackRedemptionByUseridTable = table.New(packRedemptionByUseridMetadata)
 
-// Define table metadata for GetUserDetailsByID
-var GetUserDetailsByIDMetadata = table.Metadata{
+var getUserDetailsByIDMetadata = table.Metadata{
 	Name:    "get_user_details_by_id",
 	Columns: []string{"username", "phone_no", "coins", "coupons_used"},
 	PartKey: []string{"username"},
 	SortKey: []string{},
 }
 
-// Define table metadata for GetAllStoreByCity
-var GetAllStoreByCityMetadata = table.Metadata{
+var getAllStoreByCityMetadata = table.Metadata{
 	Name:    "get_all_store_by_city",
 	Columns: []string{"city", "store_name", "location", "closes_at"},
 	PartKey: []string{"city"},
 	SortKey: []string{"store_name"},
 }
 
-// Define table metadata for CuponCodeByStoreId
-var GetCuponCodeByStoreIdMetadata = table.Metadata{
+var getCuponCodeByStoreIdMetadata = table.Metadata{
 	Name:    "cupon_code_by_store_id",
 	Columns: []string{"store_name", "cupon_code", "expiry_date", "cupon_image"},
 	PartKey: []string{"store_name"},
 	SortKey: []string{"expiry_date", "cupon_code"},
 }
 
-// Define table metadata for GetCollectionsByStoreId
-var GetCollectionsByStoreIdMetadata = table.Metadata{
+var getCollectionsByStoreIdMetadata = table.Metadata{
 	Name:    "get_collections_by_store_id",
 	Columns: []string{"store_name", "is_featured", "collection_name"},
 	PartKey: []string{"store_name"},
 	SortKey: []string{"is_featured"},
 }
 
-// Define table metadata for ProductsPacksByStoreId
-var GetProductsPacksByStoreIdMetadata = table.Metadata{
+var getProductsPacksByStoreIdMetadata = table.Metadata{
 	Name:    "products_packs_by_store_id",
 	Columns: []string{"store_name", "pack_name", "price", "description", "product_items", "prizes_10", "prizes_5", "prizes_3"},
 	PartKey: []string{"store_name"},
 	SortKey: []string{"pack_name"},
 }
 
-// Define table metadata for ProductByStoreID
-var GetProductsByStoreIdMetadata = table.Metadata{
+var getProductsByStoreIdMetadata = table.Metadata{
 	Name:    "product_by_store_id",
 	Columns: []string{"store_name", "product_name", "product_image", "price", "category", "collection_name"},
 	PartKey: []string{"store_name"},
 	SortKey: []string{"product_name"},
 }
 
-// Define table metadata for GetProductsDetailsByProductName
-var GetProductsDetailsByProductNameMetadata = table.Metadata{
+var getProductsDetailsByProductNameMetadata = table.Metadata{
 	Name:    "get_products_details_by_product_name",
 	Columns: []string{"store_name", "product_name", "product_image", "price", "category", "k_cal", "description", "ingredients"},
 	PartKey: []string{"store_name"},
 	SortKey: []string{"product_name"},
 }
 
-// Define table metadata for GetOrdersByUserID
-var GetOrdersByUserIDMetadata = table.Metadata{
+var getOrdersByUserIDMetadata = table.Metadata{
 	Name:    "get_orders_by_user_id",
 	Columns: []string{"username", "order_id", "order_time", "order_status"},
 	PartKey: []string{"username"},
 	SortKey: []string{"order_time", "order_id"},
 }
 
-// Define table metadata for GetOrderDetailsByID
-var GetOrderDetailsByIDMetadata = table.Metadata{
+var getOrderDetailsByIDMetadata = table.Metadata{
 	Name:    "get_order_details_by_id",
 	Columns: []string{"username", "order_id", "product_name", "product_quantity", "product_price", "order_status", "order_timestamp", "order_sub_total", "discount_percentage", "order_total", "pack_name", "is_pack"},
 	PartKey: []string{"username", "order_id"},
 	SortKey: []string{"product_name"},
 }
 
-// Define table metadata for PackRedemptionByUserid
-var PackRedemptionByUseridMetadata = table.Metadata{
+var packRedemptionByUseridMetadata = table.Metadata{
 	Name:    "pack_redemption_by_userid",
 	Columns: []string{"username", "store_name", "order_id", "pack_name", "order_items_remaining", "expiry_timestamp"},
 	PartKey: []string{"username"},
