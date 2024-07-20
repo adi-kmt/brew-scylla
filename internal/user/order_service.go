@@ -6,6 +6,7 @@ import (
 	"github.com/adi-kmt/brew-scylla/internal/common/messages"
 	"github.com/adi-kmt/brew-scylla/internal/domain"
 	"github.com/adi-kmt/brew-scylla/internal/domain/entities"
+	"github.com/adi-kmt/brew-scylla/internal/utils"
 	"github.com/google/uuid"
 )
 
@@ -71,13 +72,67 @@ func (s *OrderService) AddProductToCart(userId, orderId, productName, storeName 
 	return s.orderPort.AddProductToCart(userId, orderId, productName, storeName, quantity, productPrice, orderTimestamp, orderStatus, orderTotal, orderTotal)
 }
 
-func (s *OrderService) CheckoutCart(userId, orderId, storeName string, coins int64, couponCode string) *messages.AppError {
-	/*
-		1. Check if the coins exist in user
-		2. Check if coupon is valid and user user hasn't used it
-		3. Add to cart
-		4. If coins not used, then award coins to user
-		5. If coupon used, then add used coupons to user
-	*/
-	return s.orderPort.CheckoutCart(userId, orderId, storeName, coins)
+func (s *OrderService) CheckoutCart(userId, orderId, storeName string, coins int64, couponCode string) (string, *messages.AppError) {
+	user, err0 := s.userPort.GetUserDetailsByID(userId)
+	if err0 != nil {
+		return "", messages.BadRequest("User not found")
+	}
+	if coins > int64(user.Coins) || coins < 0 {
+		return "", messages.BadRequest("Invalid number of coins")
+	}
+
+	couponCodeEntityList, err1 := s.orderPort.GetCouponsByStore(storeName)
+	couponCodeList := utils.GetFieldSliceFromEntitySlice[entities.CouponCodeEntity](couponCodeEntityList, "CouponCode")
+	if err1 != nil {
+		return "", messages.BadRequest("Coupon not found")
+	}
+	if couponCode != "" {
+		if utils.Contains[string](user.CouponsUsed, couponCode) {
+			return "", messages.BadRequest("Coupon already used")
+		} else if !utils.Contains[string](couponCodeList, couponCode) {
+			return "", messages.BadRequest("Coupon code entered for wrong store")
+		} else {
+			user.CouponsUsed = append(user.CouponsUsed, couponCode)
+		}
+	}
+	order := entities.OrderEntity{
+		Username:    userId,
+		OrderID:     orderId,
+		OrderStatus: "Pending",
+		OrderTime:   time.Now(),
+	}
+	err2 := s.orderPort.AddOrderToUser(order)
+	if err2 != nil {
+		return "", messages.InternalServerError("Unable to add order")
+	}
+
+	orderDetails, err3 := s.orderPort.GetOrderDetailsByUserAndOrderId(userId, orderId)
+	if err3 != nil {
+		return "", messages.BadRequest("Invalid order id")
+	}
+	orderDetails.DiscountPercentage = 0.5
+	orderDetails.OrderTotal = orderDetails.OrderTotal * 0.5
+	orderDetails.OrderStatus = "Pending"
+
+	err4 := s.orderPort.UpdateOrderDetailsByUserAndOrderId(userId, orderId, orderDetails)
+	if err4 != nil {
+		return "", messages.InternalServerError("Unable to update order")
+	}
+
+	if coins == 0 {
+		user.Coins = user.Coins + int(0.3*float64(user.Coins))
+		err3 := s.userPort.UpdateUserDetails(userId, user)
+		if err3 != nil {
+			return "", messages.InternalServerError("Unable to update user")
+		}
+		return "Order placed sucesfully", nil
+	} else {
+		user.Coins = user.Coins - int(coins)
+		user.CouponsUsed = append(user.CouponsUsed, couponCode)
+		err3 := s.userPort.UpdateUserDetails(userId, user)
+		if err3 != nil {
+			return "", messages.InternalServerError("Unable to update user")
+		}
+		return "Order placed sucesfully", nil
+	}
 }

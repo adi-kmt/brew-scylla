@@ -45,3 +45,7 @@ func (repo *UserRepository) InsertUser(userId string, phoneNo int64) (string, *m
 	}
 	return userId, nil
 }
+
+func (repo *UserRepository) UpdateUserDetails(userId string, userDetails *entities.UserDetailsEntity) *messages.AppError {
+	return nil
+}

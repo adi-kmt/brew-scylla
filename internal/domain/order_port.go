@@ -10,6 +10,8 @@ import (
 type OrderPort interface {
 	GetOrdersByUserId(userId string) ([]entities.OrderEntity, *messages.AppError)
 	GetOrderDetailsByUserAndOrderId(userId, orderId string) (*entities.OrderDetailsEntity, *messages.AppError)
+	UpdateOrderDetailsByUserAndOrderId(userId, orderId string, orderDetails *entities.OrderDetailsEntity) *messages.AppError
 	AddProductToCart(userId, orderId, storeName, productName string, quantity int64, productPrice float64, orderTimestamp time.Time, orderStatus string, orderSubTotal, orderTotal float64) *messages.AppError
-	CheckoutCart(userId, orderId, storeName string, coins int64) *messages.AppError
+	AddOrderToUser(orderEntity entities.OrderEntity) *messages.AppError
+	GetCouponsByStore(storeName string) ([]entities.CouponCodeEntity, *messages.AppError)
 }

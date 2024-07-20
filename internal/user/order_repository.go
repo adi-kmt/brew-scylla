@@ -78,7 +78,27 @@ func (repo *OrderRepository) AddProductToCart(userId, orderId, storeName, produc
 	return nil
 }
 
-func (repo *OrderRepository) CheckoutCart(userId, orderId, storeName string, coins int64) *messages.AppError {
-	//TODO insert into order
+func (repo *OrderRepository) GetCouponsByStore(storeName string) ([]entities.CouponCodeEntity, *messages.AppError) {
+	var coupons []entities.CouponCodeEntity
+	err := db.GetCuponCodeByStoreIdTable.SelectQuery(repo.session).Bind(storeName).Select(&coupons)
+	if err != nil {
+		return nil, messages.InternalServerError("Unable to get coupons")
+	}
+	return coupons, nil
+}
+
+func (repo *OrderRepository) AddOrderToUser(orderEntity entities.OrderEntity) *messages.AppError {
+	err := db.GetOrdersByUserIDTable.InsertQuery(repo.session).BindStruct(orderEntity).ExecRelease()
+	if err != nil {
+		return messages.InternalServerError("Unable to add order")
+	}
+	return nil
+}
+
+func (repo *OrderRepository) UpdateOrderDetailsByUserAndOrderId(userId, orderId string, orderDetails *entities.OrderDetailsEntity) *messages.AppError {
+	err := db.GetOrdersByUserIDTable.UpdateQuery(repo.session).BindStruct(orderDetails).Bind(userId, orderId).ExecRelease()
+	if err != nil {
+		return messages.InternalServerError("Unable to update order details")
+	}
 	return nil
 }
