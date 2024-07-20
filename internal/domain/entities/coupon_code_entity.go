@@ -7,4 +7,5 @@ type CouponCodeEntity struct {
 	CuponCode  string    `json:"cupon_code"`
 	ExpiryDate time.Time `json:"expiry_date"`
 	CuponImage string    `json:"cupon_image"`
+	Discount   float64   `json:"discount"`
 }

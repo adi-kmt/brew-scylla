@@ -21,6 +21,7 @@ CREATE TABLE coupon_code_by_store_id (
     coupon_code text,
     expiry_date timestamp,
     cupon_image text,
+    discount float,
     PRIMARY KEY ((store_name), expiry_date, coupon_code)
 ) WITH CLUSTERING ORDER BY (expiry_date ASC);
 

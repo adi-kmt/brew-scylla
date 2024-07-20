@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"reflect"
 	"strconv"
 )
@@ -41,4 +42,16 @@ func GetFieldSliceFromEntitySlice[T any](s []T, field string) []string {
 	}
 
 	return result
+}
+
+func GetEntityThatMatchesInSlice[T any](s []T, field string, value string) (*T, error) {
+	for _, entity := range s {
+		fieldValue := reflect.ValueOf(entity).FieldByName(field)
+		if fieldValue.IsValid() {
+			if fieldValue.String() == value {
+				return &entity, nil
+			}
+		}
+	}
+	return nil, fmt.Errorf("entity not found")
 }

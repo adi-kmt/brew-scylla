@@ -24,9 +24,9 @@ Credits to DataStax Data Modelling [documentation](https://www.datastax.com/dev/
 
 # TODOs
 1. Making sure that phone numbers are unique in user details table
-2. Inserting order and updating status. Making sure that product exists/user exists before making order.
-3. Handling coins.
-4. Add discount to coupon code table/entity.
+2. Inserting order and updating status. Making sure that product exists/user exists before making order. (DONE)
+3. Handling coins. (DONE)
+4. Add discount to coupon code table/entity. (DONE)
 4. Taking care of packs and continuous buying items in packs
 5. Search products
 6. Handling magic-link login

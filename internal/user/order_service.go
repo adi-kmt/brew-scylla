@@ -110,8 +110,19 @@ func (s *OrderService) CheckoutCart(userId, orderId, storeName string, coins int
 	if err3 != nil {
 		return "", messages.BadRequest("Invalid order id")
 	}
-	orderDetails.DiscountPercentage = 0.5
-	orderDetails.OrderTotal = orderDetails.OrderTotal * 0.5
+	if couponCode != "" {
+		coupon, err5 := utils.GetEntityThatMatchesInSlice[entities.CouponCodeEntity](couponCodeEntityList, "CouponCode", couponCode)
+		if err5 != nil {
+			return "", messages.BadRequest("Coupon not found")
+		}
+
+		orderDetails.DiscountPercentage = coupon.Discount
+		orderDetails.OrderTotal = orderDetails.OrderTotal * (100 - orderDetails.DiscountPercentage) / 100
+	} else if coins > 0 {
+		orderDetails.DiscountPercentage = float64(coins) * 0.3
+		orderDetails.OrderTotal = orderDetails.OrderTotal * (100 - orderDetails.DiscountPercentage) / 100
+	}
+
 	orderDetails.OrderStatus = "Pending"
 
 	err4 := s.orderPort.UpdateOrderDetailsByUserAndOrderId(userId, orderId, orderDetails)
