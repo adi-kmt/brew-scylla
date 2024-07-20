@@ -7,9 +7,11 @@ import (
 )
 
 type AddProductToCartRequest struct {
-	StoreId   string `json:"storeId"`
-	ProductId string `json:"productId"`
-	Quantity  int64  `json:"quantity"`
+	StoreId   string  `json:"storeId"`
+	OrderId   string  `json:"orderId"`
+	ProductId string  `json:"productId"`
+	Quantity  int64   `json:"quantity"`
+	Price     float64 `json:"price"`
 }
 
 func addProductToCart(s *user.OrderService) func(c *fiber.Ctx) error {
@@ -21,7 +23,7 @@ func addProductToCart(s *user.OrderService) func(c *fiber.Ctx) error {
 		if err := c.BodyParser(request); err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(messages.BadRequest("Invalid request body"))
 		}
-		err := s.AddProductToCart(userId, request.ProductId, request.StoreId, request.Quantity)
+		err := s.AddProductToCart(userId, request.OrderId, request.ProductId, request.StoreId, request.Quantity, request.Price)
 		if err != nil {
 			return c.Status(err.Code).JSON(messages.BadRequest(err.Error()))
 		}

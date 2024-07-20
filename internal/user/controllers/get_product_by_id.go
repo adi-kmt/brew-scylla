@@ -20,6 +20,6 @@ func getProductById(s *user.ProductService) func(c *fiber.Ctx) error {
 		if err != nil {
 			return c.Status(err.Code).JSON(messages.BadRequest(err.Error()))
 		}
-		return c.Status(fiber.StatusOK).JSON(messages.SuccessResponse(product))
+		return c.Status(fiber.StatusOK).JSON(messages.SuccessResponse(*product))
 	}
 }

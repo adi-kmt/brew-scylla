@@ -21,3 +21,13 @@ Some important considerations while designing wide-column NoSQL DBs
     2. Clustering columns can be skipped from right to left. This means you can use fewer clustering columns than defined in the primary key, but you must start from the leftmost clustering column and cannot skip columns in between.
 
 Credits to DataStax Data Modelling [documentation](https://www.datastax.com/dev/modeling) for helping with data modelling best practices.
+
+# TODOs
+1. Making sure that phone numbers are unique in user details table
+2. Inserting order and updating status. Making sure that product exists/user exists before making order.
+3. Handling coins.
+4. Taking care of packs and continuous buying items in packs
+5. Search products
+6. Handling magic-link login
+7. Use UUIDs not uuid as string
+7. Admin APIs

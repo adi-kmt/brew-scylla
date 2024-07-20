@@ -49,8 +49,8 @@ func (repo *ProductRepository) GetProductsByStore(storeName string) ([]entities.
 	return products, nil
 }
 
-func (repo *ProductRepository) GetProductsDetailsByStore(storeName, productName string) ([]entities.ProductDetailsEntity, *messages.AppError) {
-	var productDetails []entities.ProductDetailsEntity
+func (repo *ProductRepository) GetProductsDetailsByStore(storeName, productName string) (*entities.ProductDetailsEntity, *messages.AppError) {
+	var productDetails entities.ProductDetailsEntity
 	err := repo.session.Query(
 		qb.Select(db.GetProductsDetailsByProductNameTable.Name()).
 			Columns(db.GetProductsDetailsByProductNameTable.Metadata().Columns...).
@@ -59,7 +59,7 @@ func (repo *ProductRepository) GetProductsDetailsByStore(storeName, productName 
 	if err != nil {
 		return nil, messages.InternalServerError("Unable to get product details")
 	}
-	return productDetails, nil
+	return &productDetails, nil
 }
 
 func (repo *ProductRepository) GetProductPacksByStore(storeName string) ([]entities.ProductPacksEntity, *messages.AppError) {

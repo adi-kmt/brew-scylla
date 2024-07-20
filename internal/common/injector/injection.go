@@ -26,7 +26,7 @@ func Inject() (InjectedVars, error) {
 	userService := authflow.NewAuthService(userRepository)
 
 	productService := user.NewProductService(productRepository)
-	orderService := user.NewOrderService(orderRepository)
+	orderService := user.NewOrderService(orderRepository, productRepository, userRepository)
 
 	return InjectedVars{db_session, productService, orderService, userService}, nil
 }

@@ -28,7 +28,7 @@ func (s *ProductService) GetProductsByStore(storeName string) ([]entities.Produc
 	return s.productPort.GetProductsByStore(storeName)
 }
 
-func (s *ProductService) GetProductDetailsByStore(storeName, productName string) ([]entities.ProductDetailsEntity, *messages.AppError) {
+func (s *ProductService) GetProductDetailsByStore(storeName, productName string) (*entities.ProductDetailsEntity, *messages.AppError) {
 	return s.productPort.GetProductsDetailsByStore(storeName, productName)
 }
 

@@ -1,7 +1,7 @@
 package user
 
 import (
-	"strconv"
+	"time"
 
 	"github.com/adi-kmt/brew-scylla/internal/common/messages"
 	"github.com/adi-kmt/brew-scylla/internal/db"
@@ -42,18 +42,43 @@ func (repo *OrderRepository) GetOrdersByUserId(userId string) ([]entities.OrderE
 	return orders, nil
 }
 
-func (repo *OrderRepository) AddProductToCart(orderId, storeName, productName string, quantity int64) *messages.AppError {
-	//TODO wrong
-	if err := repo.session.Query("INSERT INTO order_items (order_id, store_name, product_name, quantity) VALUES (?, ?, ?, ?)", []string{orderId, storeName, productName, strconv.Itoa(int(quantity))}).Exec(); err != nil {
+func (repo *OrderRepository) AddProductToCart(userId, orderId, storeName, productName string, quantity int64, productPrice float64, orderTimestamp time.Time, orderStatus string, orderSubTotal, orderTotal float64) *messages.AppError {
+	orderModel := struct {
+		UserId             string  `json:"user_id"`
+		OrderId            string  `json:"order_id"`
+		ProductName        string  `json:"product_name"`
+		ProductQuantity    int64   `json:"product_quantity"`
+		ProductPrice       float64 `json:"product_price"`
+		OrderStatus        string  `json:"order_status"`
+		OrderTimestamp     string  `json:"order_timestamp"`
+		OrderSubTotal      float64 `json:"order_sub_total"`
+		DiscountPercentage float64 `json:"discount_percentage"`
+		OrderTotal         float64 `json:"order_total"`
+		PackName           string  `json:"pack_name"`
+		IsPack             bool    `json:"is_pack"`
+	}{
+		UserId:             userId,
+		OrderId:            orderId,
+		ProductName:        productName,
+		ProductQuantity:    quantity,
+		ProductPrice:       productPrice,
+		OrderStatus:        orderStatus,
+		OrderTimestamp:     orderTimestamp.Format(time.RFC3339),
+		OrderSubTotal:      orderSubTotal,
+		DiscountPercentage: 0,
+		OrderTotal:         orderTotal,
+		PackName:           "",
+		IsPack:             false,
+	}
+
+	err := db.GetOrderDetailsByIDTable.InsertQuery(repo.session).BindStruct(orderModel).ExecRelease()
+	if err != nil {
 		return messages.InternalServerError("Unable to add product to cart")
 	}
 	return nil
 }
 
-func (repo *OrderRepository) CheckoutCart(orderId, storeName string, coins int64) *messages.AppError {
-	//TODO wrong
-	if err := repo.session.Query("UPDATE orders SET store_name = ?, coins = ? WHERE order_id = ?", []string{storeName, strconv.Itoa(int(coins)), orderId}).Exec(); err != nil {
-		return messages.InternalServerError("Unable to checkout cart")
-	}
+func (repo *OrderRepository) CheckoutCart(userId, orderId, storeName string, coins int64) *messages.AppError {
+	//TODO insert into order
 	return nil
 }
