@@ -42,7 +42,7 @@ func (repo *OrderRepository) GetOrdersByUserId(userId string) ([]entities.OrderE
 	return orders, nil
 }
 
-func (repo *OrderRepository) AddProductToCart(userId, orderId, storeName, productName string, quantity int64, productPrice float64, orderTimestamp time.Time, orderStatus string, orderSubTotal, orderTotal float64) *messages.AppError {
+func (repo *OrderRepository) AddProductToCart(userId, orderId, storeName, productName string, quantity int64, productPrice float64, orderTimestamp time.Time, orderStatus string, orderSubTotal, orderTotal float64, isPack bool, packName string) *messages.AppError {
 	orderModel := struct {
 		UserId             string  `json:"user_id"`
 		OrderId            string  `json:"order_id"`
@@ -67,8 +67,8 @@ func (repo *OrderRepository) AddProductToCart(userId, orderId, storeName, produc
 		OrderSubTotal:      orderSubTotal,
 		DiscountPercentage: 0,
 		OrderTotal:         orderTotal,
-		PackName:           "",
-		IsPack:             false,
+		PackName:           packName,
+		IsPack:             isPack,
 	}
 
 	err := db.GetOrderDetailsByIDTable.InsertQuery(repo.session).BindStruct(orderModel).ExecRelease()
@@ -99,6 +99,15 @@ func (repo *OrderRepository) UpdateOrderDetailsByUserAndOrderId(userId, orderId 
 	err := db.GetOrdersByUserIDTable.UpdateQuery(repo.session).BindStruct(orderDetails).Bind(userId, orderId).ExecRelease()
 	if err != nil {
 		return messages.InternalServerError("Unable to update order details")
+	}
+	return nil
+}
+
+func (repo *OrderRepository) AddPackRedemptionByUser(packRedemptionEntity entities.PackRedemptionEntity) *messages.AppError {
+
+	err := db.PackRedemptionByUseridTable.InsertQuery(repo.session).BindStruct(packRedemptionEntity).ExecRelease()
+	if err != nil {
+		return messages.InternalServerError("Unable to add pack redemption")
 	}
 	return nil
 }

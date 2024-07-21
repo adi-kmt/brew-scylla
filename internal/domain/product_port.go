@@ -10,6 +10,7 @@ type ProductQueryPort interface {
 	GetProductCollections(storeName string, isFeatured bool) ([]entities.ProductCollectionEntity, *messages.AppError)
 	GetProductsByStore(storeName string) ([]entities.ProductEntity, *messages.AppError)
 	GetProductPacksByStore(storeName string) ([]entities.ProductPacksEntity, *messages.AppError)
+	GetProductPackByStoreAndPackName(storeName, packName string) (*entities.ProductPacksEntity, *messages.AppError)
 	GetProductsDetailsByStore(storeName, productName string) (*entities.ProductDetailsEntity, *messages.AppError)
 }
 

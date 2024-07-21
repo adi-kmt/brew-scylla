@@ -74,3 +74,7 @@ func (repo *ProductRepository) GetProductPacksByStore(storeName string) ([]entit
 func (repo *ProductRepository) SearchProducts(productQuery, storeName, productCollection string) ([]entities.ProductEntity, *messages.AppError) {
 	return nil, nil
 }
+
+func (repo *ProductRepository) GetProductPackByStoreAndPackName(storeName, packName string) (*entities.ProductPacksEntity, *messages.AppError) {
+	return nil, nil
+}

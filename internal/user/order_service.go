@@ -32,24 +32,37 @@ func (s *OrderService) GetOrderDetails(userId, orderId string) (*entities.OrderD
 	return s.orderPort.GetOrderDetailsByUserAndOrderId(userId, orderId)
 }
 
-func (s *OrderService) AddProductToCart(userId, orderId, productName, storeName string, quantity int64, price float64) *messages.AppError {
+func (s *OrderService) AddProductToCart(userId, orderId, productName, storeName string, quantity int64, price float64, isPack bool, packName string) *messages.AppError {
 	var productPrice float64 = 0
 	var orderTimestamp time.Time
 	var orderStatus string
 	var orderTotal float64 = 0
 
-	product, err0 := s.productPort.GetProductsDetailsByStore(storeName, productName)
-	for _, priceMapValue := range product.Price {
-		if priceMapValue == price {
-			productPrice = price
+	if isPack {
+		pack, err1 := s.productPort.GetProductPackByStoreAndPackName(storeName, packName)
+		if err1 != nil {
+			return messages.BadRequest("Pack not found")
 		}
-	}
-
-	if productPrice == 0 {
-		return messages.BadRequest("Price not found, Wrong product price")
-	}
-	if err0 != nil {
-		return messages.BadRequest("Product not found")
+		if !utils.Contains[string](pack.ProductItems, productName) {
+			return messages.BadRequest("Product not found in pack")
+		}
+		if !utils.Contains([]float64{pack.Prizes10, pack.Prizes5, pack.Prizes3}, price) {
+			return messages.BadRequest("Incorrect price added for pack")
+		}
+		productPrice = price
+	} else {
+		product, err0 := s.productPort.GetProductsDetailsByStore(storeName, productName)
+		for _, priceMapValue := range product.Price {
+			if priceMapValue == price {
+				productPrice = price
+			}
+		}
+		if productPrice == 0 {
+			return messages.BadRequest("Price not found, Wrong product price")
+		}
+		if err0 != nil {
+			return messages.BadRequest("Product not found")
+		}
 	}
 	if orderId == "" {
 		newUUID, err := uuid.NewV7()
@@ -65,11 +78,17 @@ func (s *OrderService) AddProductToCart(userId, orderId, productName, storeName 
 		if err != nil {
 			return messages.BadRequest("Invalid order id")
 		}
+		if order.OrderStatus != "initial" {
+			return messages.BadRequest("Order already processed")
+		}
+		if order.IsPack != isPack && order.PackName != packName {
+			return messages.BadRequest("Cannot mix between packs or induvidual products")
+		}
 		orderTimestamp = order.OrderTimestamp
 		orderStatus = order.OrderStatus
 		orderTotal = order.OrderTotal + productPrice*float64(quantity)
 	}
-	return s.orderPort.AddProductToCart(userId, orderId, productName, storeName, quantity, productPrice, orderTimestamp, orderStatus, orderTotal, orderTotal)
+	return s.orderPort.AddProductToCart(userId, orderId, productName, storeName, quantity, productPrice, orderTimestamp, orderStatus, orderTotal, orderTotal, isPack, packName)
 }
 
 func (s *OrderService) CheckoutCart(userId, orderId, storeName string, coins int64, couponCode string) (string, *messages.AppError) {
@@ -110,6 +129,7 @@ func (s *OrderService) CheckoutCart(userId, orderId, storeName string, coins int
 	if err3 != nil {
 		return "", messages.BadRequest("Invalid order id")
 	}
+
 	if couponCode != "" {
 		coupon, err5 := utils.GetEntityThatMatchesInSlice[entities.CouponCodeEntity](couponCodeEntityList, "CouponCode", couponCode)
 		if err5 != nil {
@@ -121,6 +141,22 @@ func (s *OrderService) CheckoutCart(userId, orderId, storeName string, coins int
 	} else if coins > 0 {
 		orderDetails.DiscountPercentage = float64(coins) * 0.3
 		orderDetails.OrderTotal = orderDetails.OrderTotal * (100 - orderDetails.DiscountPercentage) / 100
+	}
+	if orderDetails.IsPack {
+		noItems := int(orderDetails.OrderTotal / orderDetails.ProductPrice)
+		packRedemptionEntity := entities.PackRedemptionEntity{
+			Username:            userId,
+			OrderID:             orderId,
+			PackName:            orderDetails.PackName,
+			StoreName:           storeName,
+			ExpiryTimestamp:     time.Now().AddDate(0, 0, 7),
+			OrderItemsRemaining: 10 - noItems,
+		}
+
+		err6 := s.orderPort.AddPackRedemptionByUser(packRedemptionEntity)
+		if err6 != nil {
+			return "", messages.InternalServerError("Unable to add pack redemption")
+		}
 	}
 
 	orderDetails.OrderStatus = "Pending"

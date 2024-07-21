@@ -12,6 +12,8 @@ type AddProductToCartRequest struct {
 	ProductId string  `json:"productId"`
 	Quantity  int64   `json:"quantity"`
 	Price     float64 `json:"price"`
+	IsPack    bool    `json:"isPack"`
+	Packname  string  `json:"packName"`
 }
 
 func addProductToCart(s *user.OrderService) func(c *fiber.Ctx) error {
@@ -23,7 +25,7 @@ func addProductToCart(s *user.OrderService) func(c *fiber.Ctx) error {
 		if err := c.BodyParser(request); err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(messages.BadRequest("Invalid request body"))
 		}
-		err := s.AddProductToCart(userId, request.OrderId, request.ProductId, request.StoreId, request.Quantity, request.Price)
+		err := s.AddProductToCart(userId, request.OrderId, request.ProductId, request.StoreId, request.Quantity, request.Price, request.IsPack, request.Packname)
 		if err != nil {
 			return c.Status(err.Code).JSON(messages.BadRequest(err.Error()))
 		}

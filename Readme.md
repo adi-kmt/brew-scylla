@@ -27,7 +27,7 @@ Credits to DataStax Data Modelling [documentation](https://www.datastax.com/dev/
 2. Inserting order and updating status. Making sure that product exists/user exists before making order. (DONE)
 3. Handling coins. (DONE)
 4. Add discount to coupon code table/entity. (DONE)
-4. Taking care of packs and continuous buying items in packs
+4. Taking care of packs and continuous buying items in packs (DONE)
 5. Search products
 6. Handling magic-link login
 7. Use UUIDs not uuid as string
