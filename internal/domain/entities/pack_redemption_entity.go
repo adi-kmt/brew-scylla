@@ -3,7 +3,7 @@ package entities
 import "time"
 
 type PackRedemptionEntity struct {
-	Username            string    `json:"username"`
+	UserId              string    `json:"user_id"`
 	StoreName           string    `json:"store_name"`
 	OrderID             string    `json:"order_id"`
 	PackName            string    `json:"pack_name"`

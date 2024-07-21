@@ -23,12 +23,13 @@ Some important considerations while designing wide-column NoSQL DBs
 Credits to DataStax Data Modelling [documentation](https://www.datastax.com/dev/modeling) for helping with data modelling best practices.
 
 # TODOs
-1. Making sure that phone numbers are unique in user details table
+1. Making sure that phone numbers are unique in user details table (DONE)
 2. Inserting order and updating status. Making sure that product exists/user exists before making order. (DONE)
 3. Handling coins. (DONE)
 4. Add discount to coupon code table/entity. (DONE)
 4. Taking care of packs and continuous buying items in packs (DONE)
-5. Search products
-6. Handling magic-link login
-7. Use UUIDs not uuid as string
-7. Admin APIs
+5. Check tables validity, ACID transactions/rollback strategy
+6. Search products
+7. Handling user login
+8. Use UUIDs/TimeUUIDs not uuid as string (DONE)
+9. Admin APIs

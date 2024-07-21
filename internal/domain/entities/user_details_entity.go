@@ -1,7 +1,7 @@
 package entities
 
 type UserDetailsEntity struct {
-	Username    string   `json:"username"`
+	UserId      string   `json:"user_id"`
 	PhoneNo     int64    `json:"phone_no"`
 	Coins       int      `json:"coins"`
 	CouponsUsed []string `json:"coupons"`

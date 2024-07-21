@@ -145,7 +145,7 @@ func (s *OrderService) CheckoutCart(userId, orderId, storeName string, coins int
 	if orderDetails.IsPack {
 		noItems := int(orderDetails.OrderTotal / orderDetails.ProductPrice)
 		packRedemptionEntity := entities.PackRedemptionEntity{
-			Username:            userId,
+			UserId:              userId,
 			OrderID:             orderId,
 			PackName:            orderDetails.PackName,
 			StoreName:           storeName,

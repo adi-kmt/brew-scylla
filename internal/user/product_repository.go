@@ -76,5 +76,10 @@ func (repo *ProductRepository) SearchProducts(productQuery, storeName, productCo
 }
 
 func (repo *ProductRepository) GetProductPackByStoreAndPackName(storeName, packName string) (*entities.ProductPacksEntity, *messages.AppError) {
-	return nil, nil
+	var productPack entities.ProductPacksEntity
+	err := db.GetProductsPacksByStoreIdTable.SelectQuery(repo.session).Bind(storeName, packName).Select(&productPack)
+	if err != nil {
+		return nil, messages.InternalServerError("Unable to get product packs")
+	}
+	return &productPack, nil
 }

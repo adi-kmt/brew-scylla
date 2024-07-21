@@ -6,6 +6,7 @@ import (
 	"github.com/adi-kmt/brew-scylla/internal/common/messages"
 	"github.com/adi-kmt/brew-scylla/internal/db"
 	"github.com/adi-kmt/brew-scylla/internal/domain/entities"
+	"github.com/gocql/gocql"
 	"github.com/scylladb/gocqlx/v3"
 	"github.com/scylladb/gocqlx/v3/qb"
 )
@@ -43,22 +44,31 @@ func (repo *OrderRepository) GetOrdersByUserId(userId string) ([]entities.OrderE
 }
 
 func (repo *OrderRepository) AddProductToCart(userId, orderId, storeName, productName string, quantity int64, productPrice float64, orderTimestamp time.Time, orderStatus string, orderSubTotal, orderTotal float64, isPack bool, packName string) *messages.AppError {
+	userUUID, err0 := gocql.ParseUUID(userId)
+	if err0 != nil {
+		return messages.BadRequest("Invalid user id")
+	}
+	orderUUID, err1 := gocql.ParseUUID(orderId)
+	if err1 != nil {
+		return messages.BadRequest("Invalid order id")
+	}
+
 	orderModel := struct {
-		UserId             string  `json:"user_id"`
-		OrderId            string  `json:"order_id"`
-		ProductName        string  `json:"product_name"`
-		ProductQuantity    int64   `json:"product_quantity"`
-		ProductPrice       float64 `json:"product_price"`
-		OrderStatus        string  `json:"order_status"`
-		OrderTimestamp     string  `json:"order_timestamp"`
-		OrderSubTotal      float64 `json:"order_sub_total"`
-		DiscountPercentage float64 `json:"discount_percentage"`
-		OrderTotal         float64 `json:"order_total"`
-		PackName           string  `json:"pack_name"`
-		IsPack             bool    `json:"is_pack"`
+		UserId             gocql.UUID `json:"user_id"`
+		OrderId            gocql.UUID `json:"order_id"`
+		ProductName        string     `json:"product_name"`
+		ProductQuantity    int64      `json:"product_quantity"`
+		ProductPrice       float64    `json:"product_price"`
+		OrderStatus        string     `json:"order_status"`
+		OrderTimestamp     string     `json:"order_timestamp"`
+		OrderSubTotal      float64    `json:"order_sub_total"`
+		DiscountPercentage float64    `json:"discount_percentage"`
+		OrderTotal         float64    `json:"order_total"`
+		PackName           string     `json:"pack_name"`
+		IsPack             bool       `json:"is_pack"`
 	}{
-		UserId:             userId,
-		OrderId:            orderId,
+		UserId:             userUUID,
+		OrderId:            orderUUID,
 		ProductName:        productName,
 		ProductQuantity:    quantity,
 		ProductPrice:       productPrice,

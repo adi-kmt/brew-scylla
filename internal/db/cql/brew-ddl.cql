@@ -1,10 +1,13 @@
 -- GetUserDetailsByID table
 CREATE TABLE get_user_details_by_id (
-    user_id text PRIMARY KEY,
+    user_id uuid PRIMARY KEY,
     phone_no bigint,
     coins int,
     coupons_used set<text>
 );
+
+-- PhoneNoIndex
+CREATE INDEX phone_no_on_user_details ON get_user_details_by_id(phone_no);
 
 -- GetAllStoreByCity table
 CREATE TABLE get_all_store_by_city (
@@ -72,8 +75,8 @@ CREATE TABLE get_products_details_by_product_name (
 
 -- GetOrdersByUserID table
 CREATE TABLE get_orders_by_user_id (
-    user_id text,
-    order_id text,
+    user_id uuid,
+    order_id uuid,
     order_time timestamp,
     order_status text,
     PRIMARY KEY ((user_id), order_time, order_id)
@@ -81,8 +84,8 @@ CREATE TABLE get_orders_by_user_id (
 
 -- GetOrderDetailsByID table
 CREATE TABLE get_order_details_by_id (
-    user_id text,
-    order_id text,
+    user_id uuid,
+    order_id uuid,
     product_name text,
     product_quantity int,
     product_price float,
@@ -98,7 +101,7 @@ CREATE TABLE get_order_details_by_id (
 
 -- PackRedemptionByUserid table
 CREATE TABLE pack_redemption_by_userid (
-    user_id text,
+    user_id uuid,
     store_name text,
     order_id text,
     pack_name text,

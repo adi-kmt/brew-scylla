@@ -3,7 +3,7 @@ package entities
 import "time"
 
 type OrderDetailsEntity struct {
-	Username           string    `json:"username"`
+	UserId             string    `json:"user_id"`
 	OrderID            string    `json:"order_id"`
 	ProductName        string    `json:"product_name"`
 	ProductQuantity    int       `json:"product_quantity"`
