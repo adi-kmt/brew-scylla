@@ -1,80 +1,9 @@
 package utils
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 )
-
-func TestGetFuzzyMatchedStringSliceFromSlice(t *testing.T) {
-	tests := []struct {
-		texts    []string
-		pattern  string
-		k        int
-		expected []string
-	}{
-		// Basic tests
-		{
-			[]string{"programming is fun and challenging", "grammatical errors can be frustrating"},
-			"gramming",
-			1,
-			[]string{"programming is fun and challenging", "grammatical errors can be frustrating"},
-		},
-		{
-			[]string{"example text", "another example"},
-			"example",
-			0,
-			[]string{"example text", "another example"},
-		},
-		{
-			[]string{"programming", "programmig", "progra", "prog"},
-			"program",
-			2,
-			[]string{"programming", "programmig"},
-		},
-
-		// Edge cases
-		{
-			[]string{},
-			"pattern",
-			0,
-			[]string{},
-		},
-		{
-			[]string{"", "text", "", "pattern", "text"},
-			"",
-			0,
-			[]string{"", "text", "", "pattern", "text"},
-		},
-		{
-			[]string{"text", "pattern", "pattern"},
-			"pattern",
-			0,
-			[]string{"pattern", "pattern"},
-		},
-		{
-			[]string{"text", "Pattern", "TEXT"},
-			"text",
-			1,
-			[]string{"text"},
-		},
-		{
-			[]string{"abcdef", "abc", "abd", "abcde"},
-			"abc",
-			1,
-			[]string{"abcdef", "abc", "abcde"},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(fmt.Sprintf("%v-%s-%d", tt.texts, tt.pattern, tt.k), func(t *testing.T) {
-			result := GetFuzzyMatchedStringSliceFromSlice(tt.texts, tt.pattern, tt.k)
-			if !reflect.DeepEqual(result, tt.expected) {
-				t.Errorf("Expected %v, but got %v", tt.expected, result)
-			}
-		})
-	}
-}
 
 func TestSliceContains(t *testing.T) {
 	// Test cases for integers
@@ -210,5 +139,51 @@ func TestGetFieldSliceFromEntitySlice(t *testing.T) {
 	emptyResult := GetFieldSliceFromEntitySlice(products, nonexistentField)
 	if len(emptyResult) != 0 {
 		t.Errorf("Expected empty result for non-existent field, but got %v", emptyResult)
+	}
+}
+
+func TestSearchEntityFieldFromSlice(t *testing.T) {
+	type Entity struct {
+		Name string
+	}
+	// Test case 1: Matching "apple"
+	entities := []Entity{
+		{Name: "apple"},
+		{Name: "orange"},
+		{Name: "banana"},
+		{Name: "pineapple"},
+	}
+
+	pattern := "aple"
+	expected := []Entity{
+		{Name: "apple"},
+	}
+
+	result, err := SearchEntityFieldFromSlice(entities, "Name", pattern)
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+
+	if len(result) != len(expected) {
+		t.Fatalf("Expected %d entities, got %d", len(expected), len(result))
+	}
+
+	for i, expectedEntity := range expected {
+		if result[i].Name != expectedEntity.Name {
+			t.Errorf("Expected entity %v at index %d, got %v", expectedEntity, i, result[i])
+		}
+	}
+
+	// Test case 2: No match
+	pattern = "xyz"
+	expected = nil
+
+	result, err = SearchEntityFieldFromSlice(entities, "Name", pattern)
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+
+	if result != nil {
+		t.Fatalf("Expected nil result, got %v", result)
 	}
 }

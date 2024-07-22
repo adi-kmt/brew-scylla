@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+
+	"github.com/texttheater/golang-levenshtein/levenshtein"
 )
 
 func SliceContains[T comparable](s []T, item T) bool {
@@ -56,69 +58,30 @@ func GetEntityThatMatchesInSlice[T any](s []T, field string, value string) (*T, 
 	return nil, fmt.Errorf("entity not found")
 }
 
-// Based on Bitap Algorithm or Baeza-Yates-Gonnet Algorithm for fuzzy string matching.
-func GetFuzzyMatchedStringSliceFromSlice(texts []string, pattern string, k int) []string {
-	var matches []string
+func SearchEntityFieldFromSlice[T any](s []T, field string, pattern string) ([]T, error) {
+	listOfStrings := GetFieldSliceFromEntitySlice(s, field)
 
-	if pattern == "" {
-		return texts // Return all texts if pattern is empty
-	}
-	if len(pattern) > 31 {
-		return []string{"The pattern is too long!"} // Handle excessively long patterns
-	}
+	threshold := 2
 
-	for _, text := range texts {
-		if bitapFuzzyBitwiseSearch(text, pattern, k) {
-			matches = append(matches, text)
+	var matchedItems []string
+
+	for _, str := range listOfStrings {
+		dist := levenshtein.DistanceForStrings([]rune(pattern), []rune(str), levenshtein.DefaultOptions)
+		if dist <= threshold {
+			matchedItems = append(matchedItems, str)
 		}
 	}
 
-	return matches
-}
-
-func bitapFuzzyBitwiseSearch(text string, pattern string, k int) bool {
-	m := len(pattern)
-
-	if m == 0 {
-		return true // An empty pattern matches any text
-	}
-	if m > 31 {
-		return false // Pattern length exceeds the limit
-	}
-
-	// Initialize the bit arrays
-	var R []uint64
-	patternMask := make([]uint64, 256)
-
-	R = make([]uint64, k+1)
-	for i := 0; i <= k; i++ {
-		R[i] = ^uint64(1)
-	}
-
-	for i := 0; i < 256; i++ {
-		patternMask[i] = ^uint64(0)
-	}
-	for i := 0; i < m; i++ {
-		patternMask[pattern[i]] &= ^(uint64(1) << uint64(i))
-	}
-
-	// Bitap algorithm implementation
-	for i := 0; i < len(text); i++ {
-		oldRd1 := R[0]
-
-		R[0] |= patternMask[text[i]]
-		R[0] <<= 1
-
-		for d := 1; d <= k; d++ {
-			tmp := R[d]
-			R[d] = (oldRd1 & (R[d] | patternMask[text[i]])) << 1
-			oldRd1 = tmp
+	if len(matchedItems) > 0 {
+		var result []T
+		for _, item := range matchedItems {
+			entity, err := GetEntityThatMatchesInSlice(s, field, item)
+			if err != nil {
+				return nil, err
+			}
+			result = append(result, *entity)
 		}
-
-		if 0 == (R[k] & (uint64(1) << uint64(m))) {
-			return true // Match found
-		}
+		return result, nil
 	}
-
-	return false // No match found
+	return nil, nil
 }
