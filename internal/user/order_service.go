@@ -43,10 +43,10 @@ func (s *OrderService) AddProductToCart(userId, orderId, productName, storeName 
 		if err1 != nil {
 			return messages.BadRequest("Pack not found")
 		}
-		if !utils.Contains[string](pack.ProductItems, productName) {
+		if !utils.SliceContains[string](pack.ProductItems, productName) {
 			return messages.BadRequest("Product not found in pack")
 		}
-		if !utils.Contains([]float64{pack.Prizes10, pack.Prizes5, pack.Prizes3}, price) {
+		if !utils.SliceContains([]float64{pack.Prizes10, pack.Prizes5, pack.Prizes3}, price) {
 			return messages.BadRequest("Incorrect price added for pack")
 		}
 		productPrice = price
@@ -106,9 +106,9 @@ func (s *OrderService) CheckoutCart(userId, orderId, storeName string, coins int
 		return "", messages.BadRequest("Coupon not found")
 	}
 	if couponCode != "" {
-		if utils.Contains[string](user.CouponsUsed, couponCode) {
+		if utils.SliceContains[string](user.CouponsUsed, couponCode) {
 			return "", messages.BadRequest("Coupon already used")
-		} else if !utils.Contains[string](couponCodeList, couponCode) {
+		} else if !utils.SliceContains[string](couponCodeList, couponCode) {
 			return "", messages.BadRequest("Coupon code entered for wrong store")
 		} else {
 			user.CouponsUsed = append(user.CouponsUsed, couponCode)
