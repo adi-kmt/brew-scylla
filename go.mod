@@ -8,6 +8,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/scylladb/gocqlx/v3 v3.0.0-20240715084157-e7267922c4da
 	github.com/spf13/pflag v1.0.5
+	github.com/texttheater/golang-levenshtein/levenshtein v0.0.0-20200805054039-cae8b0eaed6c
 )
 
 require (
@@ -20,7 +21,6 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/scylladb/go-reflectx v1.0.1 // indirect
-	github.com/texttheater/golang-levenshtein/levenshtein v0.0.0-20200805054039-cae8b0eaed6c // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.55.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
